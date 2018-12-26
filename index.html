@@ -70,6 +70,337 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-vueday05" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/26/vueday05/" class="article-date">
+  <time datetime="2018-12-26T11:55:50.868Z" itemprop="datePublished">2018-12-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="vueday05"><a href="#vueday05" class="headerlink" title="vueday05"></a>vueday05</h2><h3 id="列表动画的其他属性"><a href="#列表动画的其他属性" class="headerlink" title="列表动画的其他属性"></a>列表动画的其他属性</h3><h4 id="列表元素同时过渡"><a href="#列表元素同时过渡" class="headerlink" title="列表元素同时过渡"></a>列表元素同时过渡</h4><p>例如将数组中的元素删除时, 其他元素也一起执行动画, 此时所有元素都会加上 <code>v-move</code> 类名, 当前被删除的元素会加上 <code>v-leave-active</code> 类名</p>
+<pre><code>.v-move
+.v-leave-active
+</code></pre><p>所以只需要在<code>v-move</code>中开启过渡, <code>v-leave-active</code>中开启绝对定位即可</p>
+<pre><code>.v-move {
+  transition: all .8s ease;
+}
+.v-leave-active{
+  position: absolute;
+}
+</code></pre><h4 id="appear属性"><a href="#appear属性" class="headerlink" title="appear属性"></a>appear属性</h4><p>列表加载时执行动画</p>
+<pre><code>&lt;transition-group appear&gt;
+    &lt;li v-for=&quot;(item, i) in list&quot; :key=&quot;item.id&quot; @click=&quot;del(i)&quot;&gt;
+        {{item.id}} --- {{item.name}}
+    &lt;/li&gt;
+&lt;/transition-group&gt;
+</code></pre><h4 id="tag属性"><a href="#tag属性" class="headerlink" title="tag属性"></a>tag属性</h4><p>由于transition-group默认会渲染一个span标签包裹, 如果需要自定义标签, 可以通过tag属性来设置:</p>
+<pre><code>&lt;transition-group appear tag=&quot;ul&quot;&gt;
+    &lt;li v-for=&quot;(item, i) in list&quot; :key=&quot;item.id&quot; @click=&quot;del(i)&quot;&gt;
+        {{item.id}} --- {{item.name}}
+    &lt;/li&gt;
+&lt;/transition-group&gt;
+</code></pre><h3 id="组件化"><a href="#组件化" class="headerlink" title="组件化"></a>组件化</h3><ul>
+<li><p>模块化是指在代码的业务逻辑上进行划分, 保证每个模块的职能单一, 从而方便后期管理维护</p>
+</li>
+<li><p>组件化是指在UI界面的代码上进行划分, 提高项目中多个UI组件的复用性</p>
+</li>
+</ul>
+<h3 id="创建组件的第一种方式"><a href="#创建组件的第一种方式" class="headerlink" title="创建组件的第一种方式"></a>创建组件的第一种方式</h3><ol>
+<li><p>使用Vue.extend创建组件模板对象</p>
+<pre><code>let com1 = Vue.extend({
+    template: &apos;&lt;h1&gt;这是extend创建的组件&lt;/h1&gt;&apos;
+})
+</code></pre></li>
+<li><p>使用Vue.component注册全局组件</p>
+<p> 参数1: 组件名称</p>
+<p> 参数2: 组件的模板对象</p>
+<pre><code>Vue.component(&apos;com1&apos;, com1)
+</code></pre></li>
+<li><p>使用组件</p>
+<p> 在页面中像使用HTML标签一样, 注意: 如果组件名称是驼峰命名, 需要改为 <code>-</code> 连接, 如果全小写, 就是一个单词</p>
+<pre><code>&lt;com1&gt;&lt;/com1&gt;
+</code></pre></li>
+</ol>
+<h3 id="创建组件的第二种方式"><a href="#创建组件的第二种方式" class="headerlink" title="创建组件的第二种方式"></a>创建组件的第二种方式</h3><ol>
+<li><p>使用Vue.component注册全局组件</p>
+<p> 参数1: 组件名称</p>
+<p> 参数2: 组件的模板对象</p>
+<pre><code>Vue.component(&apos;com2&apos;, {
+    template: &apos;&lt;h1&gt;这是extend创建的组件&lt;/h1&gt;&apos;
+})
+</code></pre></li>
+<li><p>使用组件</p>
+<p> 在页面中像使用HTML标签一样, 注意: 如果组件名称是驼峰命名, 需要改为 <code>-</code> 连接, 如果全小写, 就是一个单词</p>
+<pre><code>&lt;com2&gt;&lt;/com2&gt;
+</code></pre></li>
+</ol>
+<p><strong>注意: 不管使用什么方式注册组件, 组件的根元素都只能有一个</strong></p>
+<p>以上两种注册组件的方式都不好用, 因为template是一个字符串, 所以在其中写HTML没有智能提示, 非常不方便, 所以需要使用最后一种方式来注册</p>
+<h3 id="创建组件的第三种方式"><a href="#创建组件的第三种方式" class="headerlink" title="创建组件的第三种方式"></a>创建组件的第三种方式</h3><p>基本和第二种一样, 但是由于第二种写模板没有智能提示, 所以第三种就将模板抽取到HTML中的template标签内部, 在HTML中先写好模板, 注册组件时直接引用即可</p>
+<ol>
+<li><p>在HTML中定义好模板</p>
+<pre><code>&lt;template id=&quot;tmp1&quot;&gt;
+    &lt;div&gt;
+        &lt;h1&gt;这是h1&lt;/h1&gt;
+        &lt;h2&gt;这是h2&lt;/h2&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+</code></pre></li>
+<li><p>使用Vue.component注册全局组件</p>
+<p> 参数1: 组件名称</p>
+<p> 参数2: 组件的模板对象</p>
+<pre><code>Vue.component(&apos;com3&apos;, {
+    template: &apos;#tmp1&apos;
+})
+</code></pre></li>
+<li><p>使用组件</p>
+<p> 在页面中像使用HTML标签一样, 注意: 如果组件名称是驼峰命名, 需要改为 <code>-</code> 连接, 如果全小写, 就是一个单词</p>
+<pre><code>&lt;com3&gt;&lt;/com3&gt;
+</code></pre></li>
+</ol>
+<p><strong>注意: 不管使用什么方式注册组件, 组件的根元素都只能有一个</strong></p>
+<h3 id="组件切换"><a href="#组件切换" class="headerlink" title="组件切换"></a>组件切换</h3><p>vscode插件:</p>
+<pre><code>vetur
+vue2 snippets
+</code></pre><ol>
+<li><p>通过v-if来切换组件</p>
+</li>
+<li><p>通过component组件来切换组件</p>
+</li>
+</ol>
+<pre><code>&lt;!-- 这里的component就相当于占位符, 会将comName对应的组件显示在此处, 修改comName的值会切换组件 --&gt;
+&lt;component :is=&quot;comName&quot;&gt;&lt;/component&gt;
+
+data: {
+    comName: &apos;login&apos; // 显示login组件
+}
+</code></pre><h3 id="父组件向子组件传值"><a href="#父组件向子组件传值" class="headerlink" title="父组件向子组件传值"></a>父组件向子组件传值</h3><p>因为在vue中, 组件之间的data是相互不能共享的, 即使是子组件也无法直接访问父组件的data</p>
+<p>如果子组件需要用父组件的数据, 必须通过父组件手动传递过去</p>
+<p>通过 <strong>属性绑定</strong> 的方式进行数据传递:</p>
+<p>父组件的data:</p>
+<pre><code>data: {
+    msg: &apos;这是父组件的数据!&apos;
+}
+</code></pre><p>在子组件使用的地方, 进行属性绑定:</p>
+<pre><code>&lt;sub-com :pmsg=&quot;msg&quot;&gt;&lt;/sub-com&gt;
+</code></pre><p>在子组件的props中需要先声明再使用, props和data还有methods等属性平级, 是一个数组, 其中需要定义字符串类型的属性名:</p>
+<pre><code>...
+data() {},
+methods: {},
+props: [&apos;pmsg&apos;] // 需要存放字符串类型的数据, 字符串就是父组件传递过来的属性名
+...
+</code></pre><p>做完以上操作后, 在子组件中就可以随意的使用pMsg属性了, 用法和data中的数据一样</p>
+<p>注意: props中的属性是只读的, data中的属性是可读可写的 </p>
+<p>prop的特点是<strong>单向下行绑定</strong>, 数据是只会通过父组件流向子组件的单向数据流, 子组件修改数据父组件是不会同步的, 而父组件修改数据, 所有引用该数据的子组件都会同步刷新</p>
+<h3 id="子组件向父组件传值"><a href="#子组件向父组件传值" class="headerlink" title="子组件向父组件传值"></a>子组件向父组件传值</h3><p>与父组件向子组件传值不同, 子向父传值用的是事件绑定的形式</p>
+<p>父组件的methods中声明事件处理函数:</p>
+<pre><code>methods: {
+    show(data) {
+        console.log(&apos;这是子组件传递过来的数据:&apos; + data)
+    }
+}
+</code></pre><p>父组件先给子组件绑定一个自定义事件:</p>
+<pre><code>&lt;sub-com @showinfo=&quot;show&quot;&gt;&lt;/sub-com&gt;
+</code></pre><p>子组件在特定的时机, 通过<code>$emit()</code>方法触发父组件绑定的事件, 将数据传递过去</p>
+<p><code>$emit()</code>:</p>
+<p>参数1: 事件名</p>
+<p>参数2: 传递的数据, 也就是父组件中事件处理函数的参数</p>
+<pre><code>// 当this指向vm对象时均可触发事件
+this.$emit(&apos;showinfo&apos;, &apos;哈哈哈,这是子组件的数据&apos;)
+</code></pre><h3 id="ref的使用"><a href="#ref的使用" class="headerlink" title="ref的使用"></a>ref的使用</h3><p>Vue不提倡我们操作DOM, 但是有些BT的功能可能通过DOM操作更简单的可以完成, 这时候Vue也提供了访问DOM元素的方式: <code>ref</code> 属性</p>
+<p>给DOM元素或组件上设置ref属性:</p>
+<pre><code>&lt;h1 ref=&quot;hh&quot;&gt;这是h1&lt;/h1&gt;
+</code></pre><p>在vm实例中可以直接通过<code>$refs.hh</code>获取到该DOM对象</p>
+<pre><code>this.$refs.hh
+</code></pre><h3 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h3><p>路由的目的是为了, 切换不同的组件, 从而实现一个HTML中对应很多组件, 也是所谓的 SPA (Single Page Application) 单页面应用程序</p>
+<p>以上就是所谓的前端路由, 通过#锚点完成组件的切换标识</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/12/26/vueday05/" data-id="cjq54loua0004rgqdoktslg8l" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-day3" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/29/day3/" class="article-date">
+  <time datetime="2018-08-29T07:12:05.000Z" itemprop="datePublished">2018-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/29/day3/">frontend_niubi</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="生命周期钩子"><a href="#生命周期钩子" class="headerlink" title="生命周期钩子"></a>生命周期钩子</h1><pre><code> &lt;div id=&quot;app&quot;&gt;
+    {{msg}}
+    &lt;p v-text=&quot;info()&quot;&gt;&lt;/p&gt;
+    &lt;a href=&quot;#&quot;&gt;{{msg|msginfo}}&lt;/a&gt;
+    &lt;input type=&quot;text&quot; v-focus&gt;
+&lt;/div&gt;
+&lt;script&gt;
+    var vm = new Vue({
+        el: &quot;#app&quot;,
+        data: {
+            msg: 123, //要使用的数据
+        },
+        methods: { //定义函数
+            info() {
+                return &quot;112&quot;
+            }
+        },
+        filters: { //定义过滤器
+            msginfo(msg) {
+                return &quot;过滤后的结果&quot;
+            }
+        },
+        directives: {// 指令的定义
+            focus: {//全写方式
+
+                inserted: function (el) {
+                    el.focus()
+                    console.log(el)
+                }
+            },
+            color(el){//简写形式 包含 bind 和update
+                el.style.color=&quot;blue&quot;
+            }
+        },
+        beforeCreate () {
+            //vm实力对象初始化之后,但data和methods还没配置(此时不能发送ajax请求)
+        },
+       created () {
+           //vm实力对象初始化完成之后,data和methods以及配置完成(此时最适合发送ajax请求)
+       },
+       beforeMount () {
+           //数据挂载到dom树上之前的函数
+       },
+       mounted () {
+           //数据已经完全挂载到dom树上
+       },
+       beforeUpdate () {
+           //数据已经更新 但界面没有更新
+       },
+       updated () {
+           //数据和界面都完全更新完全
+       },
+       beforeDestroy () {
+           //vue实力已经从运行阶段进入到销毁阶段
+       },
+       destroyed () {
+           //vue已经销毁
+       }
+    })
+&lt;/script&gt;
+</code></pre><h1 id="过滤器"><a href="#过滤器" class="headerlink" title="过滤器"></a>过滤器</h1><ul>
+<li>调用格式</li>
+</ul>
+<pre><code>  {{ name | "过滤器名称" }} 
+&lt;p :id=&quot;rowId | formotId&quot;&gt;
+</code></pre><ul>
+<li><p>定义全局过滤器:</p>
+<pre><code>vue.filter(&quot;过滤器名称&quot;,(name)=&gt;{
+    return &quot;返回过滤后的结果&quot;
+
+})
+</code></pre></li>
+</ul>
+<ul>
+<li>定义局部过滤器:</li>
+</ul>
+<pre><code>filters : {
+
+    formotId (rowId) {
+        return &quot;返回过滤后的结果&quot;
+    }
+
+}
+</code></pre><h2 id="注意"><a href="#注意" class="headerlink" title="注意:"></a>注意:</h2><pre><code>函数的形参和实参可以有多个定义多个  例: {{ a | b(c,d) }}
+
+filters: { b (a,b,c){ return &quot;过滤后的结果&quot;} } 
+
+形参第一个是a,第二个是b,第三个是c
+</code></pre><h1 id="自定义按钮修饰符"><a href="#自定义按钮修饰符" class="headerlink" title="自定义按钮修饰符"></a>自定义按钮修饰符</h1><pre><code> Vue.config.keyCodes.f1 = 112 //定义
+v-on:keyup.f1  //使用
+</code></pre><h1 id="自定义指令"><a href="#自定义指令" class="headerlink" title="自定义指令"></a>自定义指令</h1><ul>
+<li>定义全局指令:</li>
+</ul>
+<pre><code>Vue.directive(&apos;focus&apos;,{
+
+    bind(el) {
+        //当指令被绑定到标签上的时候执行该函数,只执行一次
+    },
+    inserted (el){
+        //当被绑定元素插入到dom中的时候执行,只执行一次
+
+    },
+    update(el){
+        //当vnode更新的时候执行,只执行一次
+    }
+})
+
+
+directives:{
+    &apos;focus&apos;:{
+
+    bind(el) {
+        //当指令被绑定到标签上的时候执行该函数,只执行一次
+        },
+    inserted (el){
+        //当被绑定元素插入到dom中的时候执行,只执行一次
+
+        },
+    update(el){
+        //当vnode更新的时候执行,只执行一次
+        }
+    }
+}
+</code></pre><h3 id="简写"><a href="#简写" class="headerlink" title="简写:"></a>简写:</h3><pre><code> Vue.directive(&apos;focus&apos;,(el)=&gt;{
+    //只包含bind和update
+})
+
+directives : {
+    focus (el) {
+        //只包含bind和update
+    }
+}
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/08/29/day3/" data-id="cjq54lou00001rgqd7a9po3e3" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-vueday01" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/08/25/vueday01/" class="article-date">
@@ -174,7 +505,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/25/vueday01/" data-id="cjq54ced90000pkqdbf1b8n8y" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/25/vueday01/" data-id="cjq54lou40002rgqdejob7kx7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -186,8 +517,8 @@
   
     <article id="post-vueday02" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/03/26/vueday02/" class="article-date">
-  <time datetime="2018-03-26T10:12:05.000Z" itemprop="datePublished">2018-03-26</time>
+    <a href="/2018/07/29/vueday02/" class="article-date">
+  <time datetime="2018-07-29T10:42:05.000Z" itemprop="datePublished">2018-07-29</time>
 </a>
     
   </div>
@@ -198,7 +529,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/26/vueday02/">frontend_niubi</a>
+      <a class="article-title" href="/2018/07/29/vueday02/">frontend_niubi</a>
     </h1>
   
 
@@ -370,7 +701,121 @@ outer()()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/03/26/vueday02/" data-id="cjq54ceef0001pkqdkfe9y0lt" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/29/vueday02/" data-id="cjq54lou70003rgqdi2s1inkt" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-README" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/26/README/" class="article-date">
+  <time datetime="2018-07-26T10:12:05.000Z" itemprop="datePublished">2018-07-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/README/">frontend_niubi</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="vue-day01"><a href="#vue-day01" class="headerlink" title="vue day01"></a>vue day01</h2><h3 id="hello-vue"><a href="#hello-vue" class="headerlink" title="hello vue"></a>hello vue</h3><p>vue就是一个js文件而已</p>
+<ol>
+<li><p>新建HTML页面, 引入vue.js文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=&quot;./lib/vue-2.4.0.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在页面中准备一个Vue的控制区域</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建Vue实例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var vm = new Vue(&#123;</span><br><span class="line">  el: &apos;#app&apos;,</span><br><span class="line">  data: &#123;</span><br><span class="line">    hello: &apos;你好啊vuejs!&apos;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在app控制区域中使用vue的指令或者插值表达式将hello数据渲染到页面</p>
+<p>插值表达式:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=&quot;app&quot;&gt;</span><br><span class="line">	&lt;p&gt;</span><br><span class="line">		&#123;&#123; hello &#125;&#125;</span><br><span class="line">	&lt;/p&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>v-text:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;p v-text=&quot;hello&quot;&gt;&lt;/p&gt;</span><br></pre></td></tr></table></figure>
+<p>v-html:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;p v-html=&quot;hello&quot;&gt;&lt;/p&gt;</span><br></pre></td></tr></table></figure>
+<p>如果hello数据中有HTML标签, v-html会解析HTML标签, 而v-text会直接将其解析成纯文本输出</p>
+</li>
+</ol>
+<h3 id="基础指令"><a href="#基础指令" class="headerlink" title="基础指令"></a>基础指令</h3><p>在vue中, 一切以 <code>v-</code> 开头的都是指令: directive</p>
+<p>插值表达式, Mustache语法也被称为小胡子语法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; msg &#125;&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>v-cloak</p>
+<p>了解即可, 可以结合css解决插值表达式闪烁的问题, 让标签元素默认隐藏, v-cloak的特点是当数据渲染完成后自动显示</p>
+</li>
+<li><p>v-text</p>
+<p>将数据以<strong>纯文本</strong>的方式渲染到指定标签内部, 会直接覆盖标签内部的内容</p>
+</li>
+<li><p>v-html</p>
+<p>同v-text, 区别在于可以渲染<strong>HTML标签</strong></p>
+</li>
+<li><p>v-bind</p>
+<p>做属性绑定的指令, 在标签中绑定title属性: 如果使用了属性绑定, 属性值就会被解析成JS表达式, 所以msg必须在vm实例的data中定义好, 否则会报错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input v-bind:title=&quot;msg&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<p>该指令使用非常频繁, 所以有简写形式 是 冒号  <code>:</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input :title=&quot;msg&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<p>而且v-bind可以绑定原生的dom属性, 也可以绑定自定义属性</p>
+</li>
+<li><p>v-on</p>
+<p>做事件绑定的指令, 简写形式 是 艾特符号 <code>@</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input @mouseover=&quot;clickHandler&quot; v-on:click=&quot;clickHandler&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<p><code>clickHandler</code>必须在vue实例的 methods 节点中定义</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var vm = new Vue(&#123;</span><br><span class="line">  el: &apos;#app&apos;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    clickHandler() &#123;</span><br><span class="line">      console.log(&apos;秀!&apos;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>如果需要绑定其他事件, 将click换成其他事件名即可</p>
+</li>
+<li><p>v-model</p>
+<p><strong>注意: 这是唯一一个实现双向数据绑定的指令, 而且只能用于表单元素, 不需要指定属性, 只能绑定value属性</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input type=&quot;text&quot; style=&quot;width:100%;&quot; v-model=&quot;msg&quot;&gt;</span><br></pre></td></tr></table></figure>
+<p>如果双向数据绑定, 一定要先在data中定义好msg</p>
+</li>
+</ol>
+<h3 id="事件修饰符"><a href="#事件修饰符" class="headerlink" title="事件修饰符"></a>事件修饰符</h3><p>事件修饰符在事件绑定时, 加在事件名后面</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input @click.stop=&quot;roll&quot; type=&quot;button&quot; value=&quot;动起来&quot;&gt;</span><br></pre></td></tr></table></figure>
+<p>事件修饰符可以串联加多个</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input @click.stop.prevent=&quot;roll&quot; type=&quot;button&quot; value=&quot;动起来&quot;&gt;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>阻止冒泡</p>
+<p>.stop</p>
+</li>
+<li><p>阻止浏览器默认行为</p>
+<p>.prevent</p>
+</li>
+<li><p>使用捕获, 等同于 <code>addEventListener()</code> 第三个参数传入true的效果</p>
+<p>.capture</p>
+</li>
+<li><p>只有点击当前元素自身才会触发事件, 如果通过冒泡或者捕获传递过来的事件不会触发</p>
+<p>.self</p>
+</li>
+<li><p>只触发一次</p>
+<p>.once</p>
+</li>
+<li><p>在移动端使用scroll事件时建议加上, 可以提高性能</p>
+<p>.passive</p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/26/README/" data-id="cjq54lotp0000rgqd41rp3pal" class="article-share-link">Share</a>
       
       
     </footer>
@@ -398,7 +843,7 @@ outer()()
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li></ul>
     </div>
   </div>
 
@@ -411,11 +856,23 @@ outer()()
       <ul>
         
           <li>
+            <a href="/2018/12/26/vueday05/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/day3/">frontend_niubi</a>
+          </li>
+        
+          <li>
             <a href="/2018/08/25/vueday01/">frontend_niubi</a>
           </li>
         
           <li>
-            <a href="/2018/03/26/vueday02/">frontend_niubi</a>
+            <a href="/2018/07/29/vueday02/">frontend_niubi</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/26/README/">frontend_niubi</a>
           </li>
         
       </ul>
