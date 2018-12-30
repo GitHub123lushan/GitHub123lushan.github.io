@@ -16,7 +16,9 @@
 <meta property="og:description" content="#入门Webpack# ##什么是WebPack，为什么要使用它？## ###为什要使用WebPack###现今的很多网页其实可以看做是功能丰富的应用，它们拥有着复杂的JavaScript代码和一大堆依赖包。为了简化开发的复杂度，前端社区涌现出了很多好的实践方法  模块化，让我们可以把复杂的程序细化为小的文件;类似于TypeScript这种在JavaScript基础上拓展的开发语言：使我们能够实现">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1031000-d0693c06bb3a00e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp">
-<meta property="og:updated_time" content="2018-12-28T01:58:51.143Z">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1031000-160bc667d3b6093a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1031000-976ba1a06fd0702f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/347/format/webp">
+<meta property="og:updated_time" content="2018-12-28T05:58:50.808Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="frontend_niubi">
 <meta name="twitter:description" content="#入门Webpack# ##什么是WebPack，为什么要使用它？## ###为什要使用WebPack###现今的很多网页其实可以看做是功能丰富的应用，它们拥有着复杂的JavaScript代码和一大堆依赖包。为了简化开发的复杂度，前端社区涌现出了很多好的实践方法  模块化，让我们可以把复杂的程序细化为小的文件;类似于TypeScript这种在JavaScript基础上拓展的开发语言：使我们能够实现">
@@ -106,13 +108,109 @@
 <h2 id="什么是Webpack"><a href="#什么是Webpack" class="headerlink" title="什么是Webpack"></a>什么是Webpack</h2><ul>
 <li>WebPack可以看做是模块打包机：它做的事情是，分析你的项目结构，找到JavaScript模块以及其它的一些浏览器不能直接运行的拓展语言（Scss，TypeScript等），并将其转换和打包为合适的格式供浏览器使用。<h2 id="WebPack和Grunt以及Gulp相比有什么特性"><a href="#WebPack和Grunt以及Gulp相比有什么特性" class="headerlink" title="WebPack和Grunt以及Gulp相比有什么特性"></a>WebPack和Grunt以及Gulp相比有什么特性</h2></li>
 <li>其实Webpack和另外两个并没有太多的可比性，Gulp/Grunt是一种能够优化前端的开发流程的工具，而WebPack是一种模块化的解决方案，不过Webpack的优点使得Webpack在很多场景下可以替代Gulp/Grunt类的工具。</li>
-<li>Grunt和Gulp的工作方式是：在一个配置文件中，指明对某些文件进行类似编译，组合，压缩等任务的具体步骤，工具之后可以自动替你完成这些任务。<br><img src="https://upload-images.jianshu.io/upload_images/1031000-d0693c06bb3a00e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp" alt=""></li>
+<li><p>Grunt和Gulp的工作方式是：在一个配置文件中，指明对某些文件进行类似编译，组合，压缩等任务的具体步骤，工具之后可以自动替你完成这些任务。<br><img src="https://upload-images.jianshu.io/upload_images/1031000-d0693c06bb3a00e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp" alt=""></p>
+<pre><code>Grunt和Gulp的工作流程            
+</code></pre></li>
 </ul>
+<p><strong>Webpack的工作方式是</strong>：把你的项目当做一个整体，通过一个给定的主文件（如：index.js），Webpack将从这个文件开始找到你的项目的所有依赖文件，使用loaders处理它们，最后打包为一个（或多个）浏览器可识别的JavaScript文件。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1031000-160bc667d3b6093a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp" alt=""></p>
+<pre><code>Webpack工作方式
+</code></pre><p>如果实在要把二者进行比较，Webpack的处理速度更快更直接，能打包更多不同类型的文件。</p>
+<p>开始使用Webpack<br>初步了解了Webpack工作方式后，我们一步步的开始学习使用Webpack。<br>安装<br>Webpack可以使用npm安装，新建一个空的练习文件夹（此处命名为webpack sample project），在终端中转到该文件夹后执行下述指令就可以完成安装。<br>//全局安装<br>npm install -g webpack<br>//安装到你的项目目录<br>npm install –save-dev webpack</p>
+<p>正式使用Webpack前的准备</p>
+<p>在上述练习文件夹中创建一个package.json文件，这是一个标准的npm说明文件，里面蕴含了丰富的信息，包括当前项目的依赖模块，自定义的脚本任务等等。在终端中使用npm init命令可以自动创建这个package.json文件</p>
+<p>npm init</p>
+<p>输入这个命令后，终端会问你一系列诸如项目名称，项目描述，作者等信息，不过不用担心，如果你不准备在npm中发布你的模块，这些问题的答案都不重要，回车默认即可。</p>
+<p>package.json文件已经就绪，我们在本项目中安装Webpack作为依赖包</p>
+<h2 id="安装Webpack"><a href="#安装Webpack" class="headerlink" title="// 安装Webpack"></a>// 安装Webpack</h2><pre><code>npm install --save-dev webpack
+</code></pre><ul>
+<li>回到之前的空文件夹，并在里面创建两个文件夹,app文件夹和public文件夹，app文件夹用来存放原始数据和我们将写的JavaScript模块 </li>
+<li>public文件夹用来存放之后供浏览器读取的文件（包括使用webpack打包生成的js文件以及一个index.html文件）。接下来我们再创建三个文件:</li>
+</ul>
+<pre><code>index.html --放在public文件夹中;
+
+Greeter.js-- 放在app文件夹中;
+
+main.js-- 放在app文件夹中;
+</code></pre><p>此时项目结构如下图所示</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1031000-976ba1a06fd0702f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/347/format/webp" alt=""></p>
+<p>我们在index.html文件中写入最基础的html代码，它在这里目的在于引入打包后的js文件（这里我们先把之后打包后的js文件命名为bundle.js，之后我们还会详细讲述）。</p>
+<pre><code>&lt;!-- index.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;Webpack Sample Project&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+&lt;div id=&apos;root&apos;&gt;
+&lt;/div&gt;
+&lt;script src=&quot;bundle.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>我们在Greeter.js中定义一个返回包含问候信息的html元素的函数,并依据CommonJS规范导出这个函数为一个模块：</p>
+<pre><code>// Greeter.js
+module.exports = function() {
+  var greet = document.createElement(&apos;div&apos;);
+  greet.textContent = &quot;Hi there and greetings!&quot;;
+  return greet;
+};
+</code></pre><p>main.js文件中我们写入下述代码，用以把Greeter模块返回的节点插入页面。</p>
+<pre><code>//main.js 
+const greeter = require(&apos;./Greeter.js&apos;);
+document.querySelector(&quot;#root&quot;).appendChild(greeter());
+</code></pre><p>正式使用Webpack<br>webpack可以在终端中使用，在基本的使用方法如下：</p>
+<pre><code># {extry file}出填写入口文件的路径，本文中就是上述main.js的路径，
+# {destination for bundled file}处填写打包文件的存放路径
+# 填写路径的时候不用添加{}
+webpack {entry file} {destination for bundled file}
+</code></pre><p>指定入口文件后，webpack将自动识别项目所依赖的其它文件，不过需要注意的是如果你的webpack不是全局安装的，那么当你在终端中使用此命令时，需要额外指定其在node_modules中的地址，继续上面的例子，在终端中输入如下命令</p>
+<pre><code># webpack非全局安装的情况
+node_modules/.bin/webpack app/main.js public/bundle.js
+</code></pre><p>webpack同时编译了main.js 和Greeter,js,现在打开index.html</p>
+<h2 id="通过配置文件来使用Webpack"><a href="#通过配置文件来使用Webpack" class="headerlink" title="通过配置文件来使用Webpack"></a>通过配置文件来使用Webpack</h2><ul>
+<li><p>Webpack拥有很多其它的比较高级的功能（比如说本文后面会介绍的loaders和plugins），这些功能其实都可以通过命令行模式实现，但是正如前面提到的，这样不太方便且容易出错的，更好的办法是定义一个配置文件，这个配置文件其实也是一个简单的JavaScript模块，我们可以把所有的与打包相关的信息放在里面。</p>
+</li>
+<li><p>继续上面的例子来说明如何写这个配置文件，在当前练习文件夹的根目录下新建一个名为webpack.config.js的文件，我们在其中写入如下所示的简单配置代码，目前的配置主要涉及到的内容是入口文件路径和打包后文件的存放路径。<br>  module.exports = {</p>
+<pre><code>entry:  __dirname + &quot;/app/main.js&quot;,//已多次提及的唯一入口文件
+output: {
+</code></pre><p>  path: __dirname + “/public”,//打包后的文件存放的地方<br>  filename: “bundle.js”//打包后输出文件的文件名</p>
+<pre><code>}
+</code></pre><p>  }</p>
+</li>
+</ul>
+<p>注：“__dirname”是node.js中的一个全局变量，它指向当前执行脚本所在的目录。</p>
+<p>有了这个配置之后，再打包文件，只需在终端里运行webpack(非全局安装需使用node_modules/.bin/webpack)命令就可以了，这条命令会自动引用webpack.config.js文件中的配置选项，示例如下：</p>
+<h2 id="配合配置文件进行打包"><a href="#配合配置文件进行打包" class="headerlink" title="配合配置文件进行打包"></a>配合配置文件进行打包</h2><ul>
+<li>又学会了一种使用Webpack的方法，这种方法不用管那烦人的命令行参数，有没有感觉很爽。如果我们可以连webpack(非全局安装需使用node_modules/.bin/webpack)这条命令都可以不用，那种感觉会不会更爽~，继续看下文。</li>
+<li><p>更快捷的执行打包任务</p>
+<ul>
+<li>在命令行中输入命令需要代码类似于node_modules/.bin/webpack这样的路径其实是比较烦人的，不过值得庆幸的是npm可以引导任务执行，对npm进行配置后可以在命令行中使用简单的npm start命令来替代上面略微繁琐的命令。在package.json中对scripts对象进行相关设置即可，设置方法如下。</li>
+</ul>
+</li>
+</ul>
+<pre><code>{
+  &quot;name&quot;: &quot;webpack-sample-project&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;Sample webpack project&quot;,
+  &quot;scripts&quot;: {
+&quot;start&quot;: &quot;webpack&quot; // 修改的是这里，JSON文件不支持注释，引用时请清除
+  },
+  &quot;author&quot;: &quot;zhang&quot;,
+  &quot;license&quot;: &quot;ISC&quot;,
+  &quot;devDependencies&quot;: {
+&quot;webpack&quot;: &quot;3.10.0&quot;
+  }
+}
+</code></pre><p>注：package.json中的script会安装一定顺序寻找命令对应位置，本地的node_modules/.bin路径就在这个寻找清单中，所以无论是全局还是局部安装的Webpack，你都不需要写前面那指明详细的路径了。</p>
+<p>npm的start命令是一个特殊的脚本名称，其特殊性表现在，在命令行中使用npm start就可以执行其对于的命令，如果对应的此脚本名称不是start，想要在命令行中运行时，需要这样用npm run {script name}如npm run build，我们在命令行中输入npm start试试，输出结果如下：</p>
+<p>使用npm start 打包代码</p>
+<p>现在只需要使用npm start就可以打包文件了，有没有觉得webpack也不过如此嘛，不过不要太小瞧webpack，要充分发挥其强大的功能我们需要修改配置文件的其它选项，一项项来看。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/09/04/day06/" data-id="cjq7e2ca80001loqdb5yp39wg" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/09/04/day06/" data-id="cjqan4q390001k8qd64elc6km" class="article-share-link">Share</a>
       
       
     </footer>
@@ -121,11 +219,11 @@
     
 <nav id="article-nav">
   
-    <a href="/2018/12/26/vueday05/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/10/04/vueday07/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          (no title)
+          frontend_niubi
         
       </div>
     </a>
@@ -157,7 +255,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">九月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">九月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li></ul>
     </div>
   </div>
 
@@ -174,19 +272,19 @@
           </li>
         
           <li>
+            <a href="/2018/10/17/vueday08/">frontend_niubi</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/04/vueday07/">frontend_niubi</a>
+          </li>
+        
+          <li>
             <a href="/2018/09/04/day06/">frontend_niubi</a>
           </li>
         
           <li>
             <a href="/2018/08/29/day3/">frontend_niubi</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/25/vueday01/">frontend_niubi</a>
-          </li>
-        
-          <li>
-            <a href="/2018/07/29/vueday02/">frontend_niubi</a>
           </li>
         
       </ul>
